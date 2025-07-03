@@ -1,0 +1,62 @@
+provider "aws" {
+  region     = "us-east-1"
+  access_key = "AKIAWV36AUY2GUZF5VFY"
+  secret_key = "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"
+}
+
+resource "aws_instance" "web" {
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = "t2.micro"
+  key_name               = "terraform_ec2_key"
+  availability_zone      = "us-east-1a"
+  vpc_security_group_ids = [data.aws_security_group.previous-sg.id]
+  root_block_device {
+    volume_size           = "25"
+    volume_type           = "gp2"
+    delete_on_termination = true
+  }
+  #additional data disk
+  ebs_block_device {
+    device_name           = "/dev/xvdb"
+    volume_size           = "10"
+    volume_type           = "gp2"
+    delete_on_termination = true
+  }
+  user_data = <<-EOF
+        #!/bin/bash
+        sudo yum install httpd -y
+        sudo systemctl start httpd
+        sudo systemctl enable httpd
+        echo "<h1>sample webserver using terraform</h1>" | sudo tee /var/www/html/index.html
+  EOF
+
+  tags = {
+    Name = "dup_instance"
+  }
+}
+
+
+resource "aws_key_pair" "terraform_ec2_key" {
+  key_name   = "terraform_ec2_key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPTMfdjZIVtsJQxGU6m1lsUychYwwsSty5AfYJt7EEiYeqptNblwuGeoZHewiTq6t8LYdA0THsdez0eoVzGME5rK/1KoiMk3soD1DRioxdsM33EcqOXR9sLikvg4OXGmlqGdKhZFMK53D4W2HpAePMv4yd37defwfF29reGM9u1Kvo/hlAgpjtOjxokqs848GqVYr5gmryKnzp1yXWBiiRk1BtWBLWyNiYhOvYJ53HlTc9TpRnjZzzKEOxS3GAg+xnxYX6s1prAXVQUjdtcysfhvzwm5rv20kgwDerGXV7dZtLPMJuXlp/Tl+1IOZF86Nj4wkGFFb++CALbmUMlE26gt65+3eKuENgnIaXkbGh6IBpbrFkl1r7TZuLZUObb928enuZIidIarJAjFEQeyRxlBn9VQvWtQNn+3izbZAZTmi8MlGgkgeubL56GcZAa6zRT1ppWBXMgLisZ7xx2JmQArMXjLGCfQhoXjJUx/jcXNSWklnSybBDYFq7U+DdQtc= root@ip-172-31-85-85.ec2.internal"
+}
+
+data "aws_security_group" "previous-sg" {
+  id = "sg-0337b5cfbde743076" #existing security group id
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
