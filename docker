@@ -38,3 +38,14 @@ cd volume_doc
 ll
 cd _data
 ll
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+docker run -d --name my-cont -p 8080:80 nginx
+docker exec -it my-cont bash
+cd usr
+cd share
+cd nginx
+cd html
+cat index.html
+echo "hiii this is container" >index.html
+cat index.html
