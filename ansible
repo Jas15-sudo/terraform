@@ -1,0 +1,43 @@
+ yum install ansible* -y
+    2  ansible --version
+    3  cd /etc/ansible
+    4  vim hosts
+    5  cd
+    6  ssh-keygen
+    7  cd .ssh
+    8  cat id_rsa.pub
+    9  cd
+   10  vim /etc/hosts
+   11  cd /etc/ansible
+   12  vim apache.yaml
+   13  ansible-playbook apache.yaml --syntax-check
+   14  ansible-playbook apache.yaml -C
+   15  ansible-playbook apache.yaml
+   16  cat jas.html;
+   17  cat jas.html
+   18  cat > jas.html
+   19  vim apache.yaml
+   20  ansible-playbook apache.yaml --syntax-check
+   21  ansible-playbook apache.yaml -C
+   22  ansible-playbook apache.yaml
+   23  cd
+   24  history
+
+
+#################################playbook
+- name : This is installing httpd
+  hosts: all
+  tasks:
+    - name : installing apache
+      yum :
+        name: httpd
+        state: present
+    - name : copying html
+      copy :
+        src : jas.html
+        dest : /var/www/html/jas.html
+    - name : start html
+      systemd:
+        name: httpd
+        state: started
+        enabled: true
