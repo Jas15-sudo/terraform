@@ -49,3 +49,14 @@ cd html
 cat index.html
 echo "hiii this is container" >index.html
 cat index.html
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+mkdir /data
+  docker run -it -v /data/:/tmp --name copying ubuntu /bin/bash
+  cd /tmp
+   touch data1.txt{1..5}
+   cd
+   ctrlP+ctrlq
+   cd /data
+   ll
+ (all files will be visible )
+
